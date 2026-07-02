@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dev Patel — Portfolio</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ── RESET & VARIABLES ── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#09090f;--bg2:#0f0f1a;--bg3:#141424;
+      --accent:#f5a623;--accent2:#ff6b35;
+      --text:#e8e6f0;--muted:#7a788a;
+      --border:rgba(245,166,35,0.18);
+      --card:rgba(255,255,255,0.035);
+      --nav-h:68px;
+      --serif:'Playfair Display',Georgia,serif;
+      --sans:'DM Sans',sans-serif;
+      --r:12px;
+      --ease:0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    ul{list-style:none}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+    /* ── NAVBAR ── */
+    nav{
+      position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:999;
+      display:flex;align-items:center;justify-content:space-between;padding:0 6%;
+      background:rgba(9,9,15,0.88);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo{font-family:var(--serif);font-size:1.35rem;font-weight:700;letter-spacing:-0.5px}
+    .nav-logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:2px}
+    .nav-links a{
+      font-size:0.79rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;
+      color:var(--muted);padding:6px 13px;border-radius:6px;position:relative;
+      transition:color var(--ease);cursor:pointer;
+    }
+    .nav-links a::after{
+      content:'';position:absolute;bottom:2px;left:50%;width:0;height:2px;
+      background:var(--accent);border-radius:1px;transform:translateX(-50%);
+      transition:width var(--ease);
+    }
+    .nav-links a:hover{color:var(--text)}
+    .nav-links a:hover::after,.nav-links a.active-link::after{width:55%}
+    .nav-links a.active-link{color:var(--accent)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px}
+    .hamburger span{display:block;width:23px;height:2px;background:var(--text);border-radius:2px;transition:var(--ease)}
+
+    /* ── PAGE WRAP ── */
+    .page-wrap{padding-top:var(--nav-h);min-height:100vh}
+
+    /* ── SECTION COMMON ── */
+    .sec{min-height:100vh;padding:90px 7% 80px}
+    .sec-label{font-size:0.7rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+    .sec-title{font-family:var(--serif);font-size:clamp(1.9rem,4vw,3rem);font-weight:700;line-height:1.15;margin-bottom:14px}
+    .sec-sub{color:var(--muted);font-size:0.95rem;max-width:500px;line-height:1.75;margin-bottom:52px}
+
+    /* ── ANIMATIONS ── */
+    .fade-up{opacity:0;transform:translateY(28px);animation:fuUp 0.8s ease forwards}
+    .slide-l{opacity:0;transform:translateX(-38px);animation:slL 0.85s ease forwards}
+    .slide-r{opacity:0;transform:translateX(38px);animation:slR 0.85s ease forwards}
+    .d1{animation-delay:.1s}.d2{animation-delay:.25s}.d3{animation-delay:.4s}.d4{animation-delay:.55s}.d5{animation-delay:.7s}
+    @keyframes fuUp{to{opacity:1;transform:translateY(0)}}
+    @keyframes slL{to{opacity:1;transform:translateX(0)}}
+    @keyframes slR{to{opacity:1;transform:translateX(0)}}
+
+    /* ── HERO ── */
+    .hero{
+      display:flex;align-items:center;padding:110px 7% 80px;min-height:100vh;
+      background:radial-gradient(ellipse 75% 65% at 85% 50%,rgba(245,166,35,0.07) 0%,transparent 70%),
+                 radial-gradient(ellipse 55% 80% at 8% 85%,rgba(255,107,53,0.05) 0%,transparent 60%),var(--bg);
+    }
+    .hero-inner{display:grid;grid-template-columns:1fr 360px;gap:56px;align-items:center;width:100%;max-width:1160px;margin:0 auto}
+    .hero-tag{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+      color:var(--accent);border:1px solid var(--border);border-radius:50px;padding:5px 15px;margin-bottom:22px;
+    }
+    .hero-tag::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero-name{font-family:var(--serif);font-size:clamp(2.6rem,5.5vw,4.6rem);font-weight:900;line-height:1.06;letter-spacing:-1.5px;margin-bottom:10px}
+    .hero-name span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-role{font-size:1rem;color:var(--accent);font-weight:500;margin-bottom:18px;letter-spacing:0.02em}
+    .hero-desc{font-size:0.97rem;color:var(--muted);line-height:1.78;max-width:470px;margin-bottom:36px}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+    .btn-p{
+      display:inline-flex;align-items:center;gap:7px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));color:#09090f;
+      font-weight:700;font-size:0.86rem;letter-spacing:0.04em;padding:13px 26px;
+      border-radius:50px;border:none;cursor:pointer;transition:transform var(--ease),box-shadow var(--ease);
+    }
+    .btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(245,166,35,0.35)}
+    .btn-o{
+      display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--text);
+      font-weight:500;font-size:0.86rem;padding:12px 26px;border-radius:50px;
+      border:1px solid rgba(255,255,255,0.15);cursor:pointer;transition:border-color var(--ease),background var(--ease);
+    }
+    .btn-o:hover{border-color:var(--accent);background:rgba(245,166,35,0.06)}
+    .hero-skills{display:flex;flex-wrap:wrap;gap:8px}
+    .skill-pill{font-size:0.72rem;font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(245,166,35,0.08);color:var(--accent);border:1px solid rgba(245,166,35,0.2)}
+
+    /* Avatar ring */
+    .hero-img-wrap{display:flex;justify-content:center}
+    .ring-wrap{position:relative;width:300px;height:300px}
+    .ring-wrap::before{content:'';position:absolute;inset:-11px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),transparent 60%,var(--accent));animation:spin 6s linear infinite}
+    .ring-wrap::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--bg)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .avatar{ position:relative; z-index:2; width:100%; height:100%; border-radius:50%; overflow:hidden; border:4px solid var(--bg); }
+    .avatar img{ width:100%; height:100%; object-fit:cover; object-position:center 35%; border-radius:50%; transform:scale(1.1); display:block; }
+    /* ── CARDS GRID ── */
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;position:relative;overflow:hidden;transition:transform var(--ease),border-color var(--ease),box-shadow var(--ease)}
+    .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,166,35,0.05),transparent);opacity:0;transition:opacity var(--ease)}
+    .card:hover{transform:translateY(-6px);border-color:rgba(245,166,35,0.42);box-shadow:0 18px 44px rgba(0,0,0,0.5)}
+    .card:hover::before{opacity:1}
+    .card-icon{font-size:2.3rem;margin-bottom:16px;display:block}
+    .card-title{font-family:var(--serif);font-size:1.15rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+    .card-desc{font-size:0.85rem;color:var(--muted);line-height:1.65;margin-bottom:16px}
+    .tags{display:flex;flex-wrap:wrap;gap:7px}
+    .tag{font-size:0.68rem;font-weight:700;letter-spacing:0.05em;padding:3px 9px;border-radius:4px;background:rgba(245,166,35,0.1);color:var(--accent);border:1px solid rgba(245,166,35,0.22)}
+
+    /* Cert cards */
+    .cert-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;display:flex;gap:16px;align-items:flex-start;transition:transform var(--ease),border-color var(--ease)}
+    .cert-card:hover{transform:translateY(-4px);border-color:rgba(245,166,35,0.38)}
+    .cert-icon{font-size:1.9rem;flex-shrink:0;margin-top:2px}
+    .cert-title{font-weight:600;font-size:0.92rem;color:var(--text);margin-bottom:4px}
+    .cert-issuer{font-size:0.78rem;color:var(--accent);margin-bottom:4px}
+    .cert-date{font-size:0.73rem;color:var(--muted)}
+
+    /* Timeline */
+    .timeline{position:relative;max-width:680px;padding-left:38px}
+    .timeline::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),transparent)}
+    .tl-item{position:relative;margin-bottom:44px}
+    .tl-item::before{content:'';position:absolute;left:-44px;top:7px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(245,166,35,0.55)}
+    .tl-year{font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .tl-title{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:3px}
+    .tl-school{font-size:0.86rem;color:var(--muted);margin-bottom:8px}
+    .tl-desc{font-size:0.83rem;color:var(--muted);line-height:1.65}
+
+    /* Experience */
+    .exp-list{display:flex;flex-direction:column;gap:18px;max-width:840px}
+    .exp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;display:grid;grid-template-columns:52px 1fr;gap:20px;align-items:start;transition:border-color var(--ease),transform var(--ease)}
+    .exp-card:hover{border-color:rgba(245,166,35,0.38);transform:translateX(5px)}
+    .exp-logo{width:52px;height:52px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.7rem}
+    .exp-role{font-family:var(--serif);font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:3px}
+    .exp-company{font-size:0.82rem;color:var(--accent);margin-bottom:3px}
+    .exp-period{font-size:0.75rem;color:var(--muted);margin-bottom:10px}
+    .exp-desc{font-size:0.83rem;color:var(--muted);line-height:1.7}
+
+    /* Hobbies */
+    .hobbies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;max-width:860px}
+    .hobby-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:26px 18px;text-align:center;transition:transform var(--ease),border-color var(--ease),background var(--ease)}
+    .hobby-card:hover{transform:translateY(-5px) scale(1.02);border-color:rgba(245,166,35,0.42);background:rgba(245,166,35,0.05)}
+    .hobby-icon{font-size:2.5rem;margin-bottom:10px;display:block}
+    .hobby-name{font-size:0.82rem;font-weight:600;color:var(--text)}
+
+    /* Contact */
+    .contact-wrap{display:grid;grid-template-columns:1fr 460px;gap:72px;max-width:1080px;align-items:start}
+    .contact-links{margin-top:36px;display:flex;flex-direction:column;gap:14px}
+    .clink{display:flex;align-items:center;gap:13px;color:var(--muted);font-size:0.85rem;transition:color var(--ease)}
+    .clink:hover{color:var(--accent)}
+    .clink-icon{width:38px;height:38px;border-radius:8px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:border-color var(--ease),background var(--ease)}
+    .clink:hover .clink-icon{border-color:var(--accent);background:rgba(245,166,35,0.08)}
+    .contact-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px}
+    .fg{margin-bottom:18px}
+    .fg label{display:block;font-size:0.74rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+    .fg input,.fg textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:11px 14px;color:var(--text);font-family:var(--sans);font-size:0.88rem;outline:none;transition:border-color var(--ease),background var(--ease)}
+    .fg input:focus,.fg textarea:focus{border-color:var(--accent);background:rgba(245,166,35,0.03)}
+    .fg textarea{resize:vertical;min-height:110px}
+    .form-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;color:#09090f;font-family:var(--sans);font-size:0.88rem;font-weight:700;cursor:pointer;letter-spacing:0.04em;transition:opacity var(--ease),transform var(--ease),box-shadow var(--ease)}
+    .form-btn:hover{opacity:.92;transform:translateY(-2px);box-shadow:0 10px 24px rgba(245,166,35,0.3)}
+    .success-msg{display:none;text-align:center;color:var(--accent);font-weight:600;font-size:0.88rem;padding:11px;margin-top:14px;border:1px solid var(--border);border-radius:8px}
+
+    .bg-alt{background:var(--bg2)}
+
+    /* Footer */
+    footer{text-align:center;padding:28px;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--border)}
+    footer span{color:var(--accent)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:940px){
+      .hero-inner{grid-template-columns:1fr;text-align:center}
+      .hero-img-wrap{order:-1}
+      .ring-wrap{width:220px;height:220px}
+      .avatar{font-size:5rem}
+      .hero-desc{margin:0 auto 32px}
+      .hero-btns,.hero-skills{justify-content:center}
+      .contact-wrap{grid-template-columns:1fr;gap:36px}
+    }
+    @media(max-width:660px){
+      .nav-links{display:none}
+      .hamburger{display:flex}
+      .nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-h);left:0;right:0;background:rgba(9,9,15,.97);padding:20px 6%;border-bottom:1px solid var(--border);gap:2px}
+      .sec{padding:80px 5% 60px}
+      .exp-card{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body ng-app="portfolioApp" ng-controller="RootCtrl">
+
+  <!-- ════ NAVBAR ════ -->
+  <nav>
+    <div class="nav-logo">Dev<span>.</span></div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a ng-href="#!/home"         ng-class="{'active-link': cur==='home'}">Home</a></li>
+      <li><a ng-href="#!/projects"     ng-class="{'active-link': cur==='projects'}">Projects</a></li>
+      <li><a ng-href="#!/certificates" ng-class="{'active-link': cur==='certificates'}">Certificates</a></li>
+      <li><a ng-href="#!/education"    ng-class="{'active-link': cur==='education'}">Education</a></li>
+      <li><a ng-href="#!/experience"   ng-class="{'active-link': cur==='experience'}">Experience</a></li>
+      <li><a ng-href="#!/hobbies"      ng-class="{'active-link': cur==='hobbies'}">Hobbies</a></li>
+      <li><a ng-href="#!/contact"      ng-class="{'active-link': cur==='contact'}">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ════ NG-VIEW ════ -->
+  <div class="page-wrap" ng-view></div>
+
+  <!-- ════ FOOTER ════ -->
+  <footer>2025 <span>Dev Patel</span> &mdash; IT Student @ SETI, GTU &middot; Ahmedabad, Gujarat</footer>
+
+  <script>
+  /* ════════════════════════════════════════
+     MODULE
+  ════════════════════════════════════════ */
+  var app = angular.module('portfolioApp', ['ngRoute']);
+
+  /* ════════════════════════════════════════
+     TEMPLATES — loaded into $templateCache
+     (avoids blank-page timing/CORS issues)
+  ════════════════════════════════════════ */
+  app.run(['$templateCache', function(T) {
+
+    T.put('home.html',
+      '<div class="hero">' +
+        '<div class="hero-inner">' +
+          '<div>' +
+            '<div class="hero-tag slide-l d1">IT Student &bull; Android Dev Enthusiast</div>' +
+            '<h1 class="hero-name slide-l d2">Hello! I Am<br><span>Dev Patel</span></h1>' +
+            '<p class="hero-role slide-l d2">BE 3rd Year &mdash; Information Technology</p>' +
+            '<p class="hero-desc slide-l d3">Passionate Web developer from Ahmedabad, Gujarat studying at Sal Engineering &amp; Technical Institute under GTU. I love building smart applications and exploring AI/ML to solve real problems.</p>' +
+            '<div class="hero-btns slide-l d3">' +
+              '<a ng-href="#!/projects" class="btn-p">View Projects &rarr;</a>' +
+              '<a ng-href="#!/contact" class="btn-o">Get In Touch</a>' +
+            '</div>' +
+            '<div class="hero-skills fade-up d4">' +
+              '<span class="skill-pill">HTML</span>' +
+              '<span class="skill-pill">CSS</span>' +
+              '<span class="skill-pill">JavaScript</span>' +
+              '<span class="skill-pill">Python</span>' +
+              '<span class="skill-pill">Numpy</span>' +
+              '<span class="skill-pill">Pandas</span>' +
+              '<span class="skill-pill">Matplotlib</span>' +
+              '<span class="skill-pill">AI/ML</span>' +
+              '<span class="skill-pill">Cyber Security</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="hero-img-wrap slide-r d2">' +
+            '<div class="ring-wrap"><div class="avatar"><img src="140970b5-349d-49a9-bcaf-bb09ee694849.png" alt="Dev Patel"></div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+
+    T.put('projects.html',
+      '<section class="sec bg-alt">' +
+        '<div class="fade-up d1"><p class="sec-label">What I\'ve Built</p><h2 class="sec-title">Featured Projects</h2><p class="sec-sub">Apps and websites I built while learning and exploring new technologies.</p></div>' +
+        '<div class="cards-grid">' +
+          '<div class="card fade-up d1"><span class="card-icon">\uD83E\uDDF3</span><div class="card-title">Smart Luggage Bag Application</div><p class="card-desc">An intelligent Android app that helps travelers manage and track their luggage. Features item checklists, weight estimation, and travel reminders for a stress-free trip.</p><div class="tags"><span class="tag">Android</span><span class="tag">Java</span><span class="tag">XML</span><span class="tag">SQLite</span></div></div>' +
+          '<div class="card fade-up d2"><span class="card-icon">\uD83C\uDF10</span><div class="card-title">Portfolio Website</div><p class="card-desc">A personal portfolio website showcasing my projects, skills and achievements. Clean responsive design built from scratch with pure HTML, CSS and JavaScript.</p><div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div></div>' +
+          '<div class="card fade-up d3"><span class="card-icon">\uD83D\uDED2</span><div class="card-title">Flipkart Clone</div><p class="card-desc">A front-end clone of the Flipkart e-commerce platform with product listing, category navigation, a working cart UI, and a fully responsive layout.</p><div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div></div>' +
+          '<div class="card fade-up d5"><span class="card-icon">\uD83D\uDCA7</span><div class="card-title">AI-Based Smart Water Conservation System</div><p class="card-desc">An intelligent system designed to monitor and optimize water usage using Artificial Intelligence and data analysis techniques. The system analyzes water consumption patterns, detects abnormal usage, and predicts efficient water distribution to reduce wastage and promote sustainable resource management.</p><div class="tags"><span class="tag">AI / ML</span><span class="tag">Python</span><span class="tag">Data Analysis</span></div></div>' +
+          '</div>' +
+      '</section>'
+    );
+
+    T.put('certificates.html',
+      '<section class="sec">' +
+        '<div class="fade-up d1"><p class="sec-label">Credentials</p><h2 class="sec-title">Certificates</h2><p class="sec-sub">Courses and certifications that validate my skills.</p></div>' +
+        '<div class="cards-grid">' +
+          '<div class="cert-card fade-up d1"><span class="cert-icon">\uD83C\uDF10</span><div><div class="cert-title">Web Development Bootcamp</div><div class="cert-issuer">Udemy / Online Platform</div><div class="cert-date">Completed 2024</div></div></div>' +
+          '<div class="cert-card fade-up d2"><span class="cert-icon">\uD83E\uDD16</span><div><div class="cert-title">Artificial Intelligence &amp; Machine Learning</div><div class="cert-issuer">Skills4future Program Course</div><div class="cert-date">Completed 2024</div></div></div>' +
+          '<div class="cert-card fade-up d3"><span class="cert-icon">\uD83D\uDCF1</span><div><div class="cert-title">Android App Development</div><div class="cert-issuer">Google / Online Certificate</div><div class="cert-date">Completed 2024</div></div></div>' +
+          '<div class="cert-card fade-up d4"><span class="cert-icon">\uD83D\uDC0D</span><div><div class="cert-title">Python Programming Fundamentals</div><div class="cert-issuer">Coursera / NPTEL</div><div class="cert-date">Completed 2023</div></div></div>' +
+        '</div>' +
+      '</section>'
+    );
+
+    T.put('education.html',
+      '<section class="sec bg-alt">' +
+        '<div class="fade-up d1"><p class="sec-label">Academic Background</p><h2 class="sec-title">Education</h2><p class="sec-sub">My academic journey and key milestones.</p></div>' +
+        '<div class="timeline">' +
+          '<div class="tl-item fade-up d2"><div class="tl-year">2026 &mdash; Present</div><div class="tl-title">Bachelor of Engineering (BE) &mdash; IT</div><div class="tl-school">\uD83C\uDF93 Sal Engineering &amp; Technical Institute, Ahmedabad</div><p class="tl-desc">Currently in 3rd Year under Gujarat Technological University (GTU). Studying Data Structures, DBMS, Operating Systems, Android Development, and AI. Actively building projects and participating in college tech events.</p></div>' +
+          '<div class="tl-item fade-up d3"><div class="tl-year">2021 &mdash; 2023</div><div class="tl-title">Higher Secondary Certificate (HSC) &mdash; Science</div><div class="tl-school">\uD83C\uDFEB Gujarat Secondary &amp; Higher Secondary Education Board</div><p class="tl-desc">Completed HSC with Science stream (Physics, Chemistry, Maths). Developed early interest in computers and programming during this period.</p></div>' +
+          '<div class="tl-item fade-up d4"><div class="tl-year">Until 2021</div><div class="tl-title">Secondary School Certificate (SSC)</div><div class="tl-school">\uD83C\uDFEB Gujarat Board School, Ahmedabad</div><p class="tl-desc">Completed 10th grade with strong academic performance. First exposure to computers and basic programming logic.</p></div>' +
+        '</div>' +
+      '</section>'
+    );
+
+    T.put('experience.html',
+      '<section class="sec">' +
+        '<div class="fade-up d1"><p class="sec-label">Work &amp; Learning</p><h2 class="sec-title">Experience</h2><p class="sec-sub">Hands-on experience through projects, self-learning and academics.</p></div>' +
+        '<div class="exp-list">' +
+          '<div class="exp-card fade-up d2"><div class="exp-logo">\uD83D\uDCF1</div><div><div class="exp-role">Android Developer &mdash; Group Project</div><div class="exp-company">Smart Luggage Bag App</div><div class="exp-period">2024 &middot; Personal Project</div><p class="exp-desc">Designed and developed a full Android application independently. Handled UI/UX in XML, business logic in Java, and data storage using SQLite. Learned end-to-end app development lifecycle.</p></div></div>' +
+          '<div class="exp-card fade-up d3"><div class="exp-logo">\uD83C\uDF10</div><div><div class="exp-role">Frontend Web Developer &mdash; Projects</div><div class="exp-company">Portfolio &amp; Flipkart Clone</div><div class="exp-period">2023 &mdash; 2024 &middot; Project Work</div><p class="exp-desc">Built responsive websites using HTML, CSS, and JavaScript. Recreated industry-level UI to sharpen front-end skills and understand real-world design patterns and layout techniques.</p></div></div>' +
+          '<div class="exp-card fade-up d4"><div class="exp-logo">\uD83E\uDD16</div><div><div class="exp-role">AI/ML Learner &amp; Python Developer</div><div class="exp-company">Academic &amp; Online Courses</div><div class="exp-period">2023 &mdash; Present &middot; Continuous Learning</div><p class="exp-desc">Completed AIML certification and applied knowledge in Python-based data visualisation using NumPy and Matplotlib. Exploring Machine Learning models and real-world datasets.</p></div></div>' +
+        '</div>' +
+      '</section>'
+    );
+
+    T.put('hobbies.html',
+      '<section class="sec bg-alt">' +
+        '<div class="fade-up d1"><p class="sec-label">Beyond the Screen</p><h2 class="sec-title">Hobbies &amp; Interests</h2><p class="sec-sub">Things I love doing when I\'m not coding.</p></div>' +
+        '<div class="hobbies-grid">' +
+          '<div class="hobby-card fade-up d1"><span class="hobby-icon">\uD83D\uDCF1</span><div class="hobby-name">App Building</div></div>' +
+          '<div class="hobby-card fade-up d2"><span class="hobby-icon">\uD83C\uDFAE</span><div class="hobby-name">Gaming</div></div>' +
+          '<div class="hobby-card fade-up d3"><span class="hobby-icon">\uD83C\uDFB5</span><div class="hobby-name">Music</div></div>' +
+          '<div class="hobby-card fade-up d4"><span class="hobby-icon">\uD83D\uDCDA</span><div class="hobby-name">Reading Tech</div></div>' +
+          '<div class="hobby-card fade-up d1"><span class="hobby-icon">\u2708\uFE0F</span><div class="hobby-name">Travelling</div></div>' +
+          '<div class="hobby-card fade-up d2"><span class="hobby-icon">\uD83E\uDDE9</span><div class="hobby-name">Puzzles</div></div>' +
+          '<div class="hobby-card fade-up d3"><span class="hobby-icon">\uD83E\uDD16</span><div class="hobby-name">AI Exploration</div></div>' +
+          '<div class="hobby-card fade-up d4"><span class="hobby-icon">\uD83C\uDFCF</span><div class="hobby-name">Cricket</div></div>' +
+          '<div class="hobby-card fade-up d5"><span class="hobby-icon">🕵️</span><div class="hobby-name">Crime Mystery Solving</div></div>' +
+        '</div>' +
+      '</section>'
+    );
+
+    T.put('contact.html',
+      '<section class="sec" ng-controller="ContactCtrl">' +
+        '<div class="fade-up d1" style="margin-bottom:52px"><p class="sec-label">Say Hello</p><h2 class="sec-title">Get In Touch</h2><p class="sec-sub">Open to internships, collaborations, and exciting projects. Let\'s connect!</p></div>' +
+        '<div class="contact-wrap">' +
+          '<div class="fade-up d2">' +
+            '<p style="color:var(--muted);line-height:1.78;max-width:380px;font-size:.93rem">I\'m actively looking for internship opportunities and cool collaborations. Whether you have a project idea or just want to say hi &mdash; my inbox is always open!</p>' +
+            '<div class="contact-links">' +
+              '<a href="mailto:devpatel@example.com" class="clink"><div class="clink-icon">\uD83D\uDCE7</div> devp44239@gmail.com</a>' +
+              '<a href="https://github.com" target="_blank" class="clink"><div class="clink-icon">\uD83D\uDC19</div> github.com/DevPatel2006</a>' +
+              '<a href="https://linkedin.com" target="_blank" class="clink"><div class="clink-icon">\uD83D\uDCBC</div> linkedin.com/in/DevPatel</a>' +
+              '<span class="clink"><div class="clink-icon">\uD83D\uDCCD</div> Ahmedabad, Gujarat, India</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="contact-form fade-up d3">' +
+            '<div class="fg"><label>Your Name</label><input type="text" ng-model="form.name" placeholder="e.g. Rahul Shah"/></div>' +
+            '<div class="fg"><label>Email Address</label><input type="email" ng-model="form.email" placeholder="you@example.com"/></div>' +
+            '<div class="fg"><label>Message</label><textarea ng-model="form.message" placeholder="Hi Dev, I would love to collaborate on..."></textarea></div>' +
+            '<button class="form-btn" ng-click="submitForm()">Send Message &rarr;</button>' +
+            '<div class="success-msg" id="successMsg">\u2705 Message sent! I\'ll reply soon.</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>'
+    );
+
+  }]);
+
+  /* ════════════════════════════════════════
+     ROUTING
+  ════════════════════════════════════════ */
+  app.config(['$routeProvider', function($r) {
+    $r
+      .when('/home',         { templateUrl: 'home.html' })
+      .when('/projects',     { templateUrl: 'projects.html' })
+      .when('/certificates', { templateUrl: 'certificates.html' })
+      .when('/education',    { templateUrl: 'education.html' })
+      .when('/experience',   { templateUrl: 'experience.html' })
+      .when('/hobbies',      { templateUrl: 'hobbies.html' })
+      .when('/contact',      { templateUrl: 'contact.html' })
+      .otherwise({ redirectTo: '/home' });
+  }]);
+
+  /* ════════════════════════════════════════
+     ROOT CONTROLLER
+  ════════════════════════════════════════ */
+  app.controller('RootCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+    $scope.cur = 'home';
+    $rootScope.$on('$routeChangeSuccess', function(e, current) {
+      if (current && current.$$route) {
+        $scope.cur = current.$$route.originalPath.replace('/', '');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      var nl = document.getElementById('navLinks');
+      if (nl) nl.classList.remove('open');
+    });
+  }]);
+
+  /* ════════════════════════════════════════
+     CONTACT CONTROLLER
+  ════════════════════════════════════════ */
+  app.controller('ContactCtrl', ['$scope', function($scope) {
+    $scope.form = { name: '', email: '', message: '' };
+    $scope.submitForm = function() {
+      if (!$scope.form.name || !$scope.form.email || !$scope.form.message) {
+        alert('Please fill in all fields.');
+        return;
+      }
+      var msg = document.getElementById('successMsg');
+      if (msg) {
+        msg.style.display = 'block';
+        setTimeout(function() {
+          $scope.form = { name: '', email: '', message: '' };
+          $scope.$apply();
+          msg.style.display = 'none';
+        }, 4000);
+      }
+    };
+  }]);
+
+  /* ════════════════════════════════════════
+     MOBILE MENU
+  ════════════════════════════════════════ */
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  document.addEventListener('click', function(e) {
+    var nav = document.querySelector('nav');
+    if (nav && !nav.contains(e.target)) {
+      var nl = document.getElementById('navLinks');
+      if (nl) nl.classList.remove('open');
+    }
+  });
+  </script>
+</body>
+</html>
